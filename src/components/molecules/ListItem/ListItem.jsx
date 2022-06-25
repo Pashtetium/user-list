@@ -4,21 +4,27 @@ import { Text, Button } from 'components/atoms'
 
 import { ContainerStyle, MetaContainerStyle } from './ListItemStyle'
 
-function ListItem() {
+function ListItem({
+  user, handleUserDelete, isSelected, selectUser,
+}) {
+  const {
+    id, first_name, last_name, birth_date, gender,
+  } = user
+
   return (
-    <ContainerStyle>
+    <ContainerStyle isSelected={isSelected} onClick={() => { selectUser() }}>
       <MetaContainerStyle>
         <Text>
-          Billy Herrington
+          {`${first_name} ${last_name}`}
         </Text>
         <Text title="Date of birth">
-          01/11/1012
+          {birth_date}
         </Text>
         <Text title="Gender">
-          Male
+          {gender}
         </Text>
       </MetaContainerStyle>
-      <Button type="link">
+      <Button handleClick={() => handleUserDelete(id)} type="link">
         Delete
       </Button>
     </ContainerStyle>

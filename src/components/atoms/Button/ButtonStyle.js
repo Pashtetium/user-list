@@ -16,8 +16,20 @@ export const ButtonStyle = styled.button`
   color: black;
   background: linear-gradient(180deg, #FFFFFF 0%, #D9DFFF 100%);
   box-shadow: 0px 2px 0px rgba(0, 0, 0, 0.043);
+  cursor: pointer;
   
-  &::pressed {
+  &:active {
     
+  }
+`
+
+export const LinkStyle = styled.button`
+  border: none; 
+  color: #00CFFD;
+  background: none;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
   }
 `

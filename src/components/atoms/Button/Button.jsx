@@ -1,10 +1,18 @@
 import React from 'react'
 
-import { ButtonStyle } from './ButtonStyle'
+import { ButtonStyle, LinkStyle } from './ButtonStyle'
 
-function Button({ children, size }) {
+function Button({
+  children, size, type, handleClick,
+}) {
+  if (type === 'link') {
+    return (
+      <LinkStyle onClick={handleClick}>{children}</LinkStyle>
+    )
+  }
+
   return (
-    <ButtonStyle size={size}>
+    <ButtonStyle size={size} onClick={handleClick}>
       {children}
     </ButtonStyle>
   )
