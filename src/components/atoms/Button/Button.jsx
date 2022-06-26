@@ -12,7 +12,7 @@ function Button({
   }
 
   return (
-    <ButtonStyle size={size} onClick={handleClick}>
+    <ButtonStyle size={size} type={type} onClick={handleClick}>
       {children}
     </ButtonStyle>
   )
