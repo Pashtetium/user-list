@@ -1,11 +1,12 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect } from 'react'
+// Should have just used some component library...
 
-import { UserPage } from 'components/pages'
-import { ListOfUsers, UserModal } from 'components/organisms'
-import { Button } from 'components/atoms'
 import {
   fetchAllUsers, deleteUser, createUser, editUser,
-} from 'api/users.service'
+} from 'api/users.api'
+import { UserPage } from 'components/pages'
+import { ListOfUsers, UserModal, Error } from 'components/organisms'
+import { Button } from 'components/atoms'
 
 import {
   TitleStyle, HeaderStyle, MainPageStyle, ListStyle,
@@ -13,61 +14,82 @@ import {
 
 function MainPage() {
   const [users, setUsers] = useState([])
-  // const [loading, setLoading] = useState(false)
   const [isUserModalOpened, setUserModalOpened] = useState(false)
   const [isUserUpdating, setUserUpdating] = useState(false)
   const [selectedUser, setSelectedUser] = useState(null)
+  const [isErrorVisible, setErrorVisible] = useState(false)
 
-  const getUsers = useCallback(() => {
+  useEffect(() => {
     fetchAllUsers()
-      .then((data) => {
+      .then(({ data }) => {
         setUsers(data)
       })
+      .catch(() => { setErrorVisible(true) })
   }, [])
 
   useEffect(() => {
-    getUsers()
-  }, [])
+    if (isErrorVisible) {
+      setTimeout(() => {
+        setErrorVisible(false)
+      }, 3000)
+    }
+  }, [isErrorVisible])
 
   const handleUserDelete = (userId) => {
     deleteUser(userId)
-      .then(() => { setUsers(users.filter((user) => user.id !== userId)) })
+      .then(() => {
+        setUsers(users.filter((user) => user.id !== userId))
+
+        setSelectedUser(false)
+      })
+      .catch(() => {
+        setErrorVisible(true)
+      })
   }
 
   const handleAddUser = (e) => {
     e.preventDefault()
 
-    const data = Object.fromEntries(new FormData(e.target)
+    const formData = Object.fromEntries(new FormData(e.target)
       .entries())
 
-    if (data.is_active === undefined) {
-      data.is_active = false
+    if (formData.is_active === undefined) {
+      formData.is_active = false
+    } else {
+      formData.is_active = true
     }
 
-    createUser(data)
-      .then((response) => {
-        setUsers(users.concat(response))
+    createUser(formData)
+      .then(({ data }) => {
+        setUsers(users.concat(data))
 
         setUserModalOpened(false)
+
+        setSelectedUser(null)
       })
+      .catch(() => { setErrorVisible(true) })
   }
 
   const handleEditUser = (e) => {
     e.preventDefault()
 
-    const data = Object.fromEntries(new FormData(e.target)
+    const formData = Object.fromEntries(new FormData(e.target)
       .entries())
 
-    if (data.is_active === undefined) {
-      data.is_active = false
+    // Checkbox doesn't send it's value if unchecked, this is a workaround for that
+    if (formData.is_active === undefined) {
+      formData.is_active = false
+    } else {
+      formData.is_active = true
     }
 
-    editUser(data)
-      .then((response) => {
-        setSelectedUser(response)
+    editUser(formData)
+      .then(({ data }) => {
+        setSelectedUser(data)
 
         setUserModalOpened(false)
       })
+      .catch(() => { setErrorVisible(true) })
   }
 
   const toggleSubmitType = isUserUpdating ? handleEditUser : handleAddUser
@@ -101,12 +123,14 @@ function MainPage() {
         </ListStyle>
         <UserPage setModalOpened={onEditUser} user={selectedUser} />
       </MainPageStyle>
-      <UserModal
-        closeModal={setUserModalOpened}
-        handleSubmit={toggleSubmitType}
-        user={selectedUser}
-        visible={isUserModalOpened}
-      />
+      {isUserModalOpened && (
+        <UserModal
+          closeModal={setUserModalOpened}
+          handleSubmit={toggleSubmitType}
+          user={selectedUser}
+        />
+      )}
+      {isErrorVisible && <Error />}
     </>
   )
 }

@@ -3,7 +3,8 @@ import styled from 'styled-components'
 export const UserDataStyle = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
+
+  max-width: 300px;
 `
 
 export const UserInfoStyle = styled.div`

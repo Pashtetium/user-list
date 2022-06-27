@@ -2,6 +2,7 @@ import styled from 'styled-components'
 
 export const UserPageStyle = styled.div`
   width: 100%;
+  height: 100%;
   padding: 20px;
   display: flex;
   align-items: center;

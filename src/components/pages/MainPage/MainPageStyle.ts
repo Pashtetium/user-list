@@ -1,14 +1,14 @@
 import styled from 'styled-components'
 
 export const MainPageStyle = styled.div`
+  height: 80vh;
   display: flex;
-  gap: 24px;
-  height: 100%;
+  gap: 0 24px;
 `
 
 export const ListStyle = styled.div`
-  width: 15%;
   height: 100%;
+  width: 15%;
 
   border-radius: 20px;
   background-color: #19173F;

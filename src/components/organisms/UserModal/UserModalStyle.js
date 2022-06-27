@@ -24,3 +24,7 @@ export const FormStyle = styled.form`
 
   background-color: #19183F;
 `
+
+export const InputStyle = styled.div`
+  margin-bottom: 20px;
+`
